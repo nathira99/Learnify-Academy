@@ -5,7 +5,7 @@ function AdminDashboard() {
   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5NjI4ZjUzOTZkYzc2ODRhYTJmYWYyMyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2ODA2OTMwOCwiZXhwIjoxNzY4Njc0MTA4fQ.tKtFrS7osGJbBWlwK3UYoq0kbqgZWHvbqcFw3lX2XCo";
 
   const [stats, setStats] = useState(null);
-  const [payments, setPayments] = useState([]);
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -13,7 +13,7 @@ function AdminDashboard() {
       const paymentsRes = await getPayments(token);
 
       setStats(statsRes.data);
-      setPayments(paymentsRes.data);
+      setOrders(paymentsRes.data);
     };
 
     fetchData();
@@ -37,18 +37,22 @@ function AdminDashboard() {
         <thead>
           <tr>
             <th>Order ID</th>
+            <th>E-mail ID</th>
+            <th>Course Title</th>
             <th>Amount (₹)</th>
             <th>Status</th>
             <th>Date</th>
           </tr>
         </thead>
         <tbody>
-          {payments.map((p) => (
-            <tr key={p._id}>
-              <td>{p.order?._id}</td>
-              <td>{p.order?.amount / 100}</td>
-              <td>{p.status}</td>
-              <td>{new Date(p.createdAt).toLocaleString()}</td>
+          {orders.map((order) => (
+            <tr key={order._id}>
+              <td>{order?._id}</td>
+              <td>{order?.user?.email}</td>
+              <td>{order?.course?.title}</td>
+              <td> ₹{order?.amount / 100}</td>
+              <td>{order.status}</td>
+              <td>{new Date(order.createdAt).toLocaleString()}</td>
             </tr>
           ))}
         </tbody>

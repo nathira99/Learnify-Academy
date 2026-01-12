@@ -24,7 +24,7 @@ function UserDashboard() {
       {enrollments.length === 0 && <p>No courses purchased yet.</p>}
 
       {enrollments.map(e => (
-        e.course && (   // 🔴 SAFETY CHECK
+        e.course && (  
           <div
             key={e._id}
             style={{ border: "1px solid #ccc", padding: 15, marginTop: 10 }}

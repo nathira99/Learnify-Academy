@@ -1,24 +1,24 @@
-const Payment = require("../models/Payment");
+const Order = require("../models/Order");
 
 exports.getAllPayments = async (req, res) => {
-  const payments = await Payment.find()
-    .populate("order")
+  const orders = await Order.find({ status: "PAID" })
+    .populate("user")
+    .populate("course")
     .sort({ createdAt: -1 });
 
-  res.json(payments);
+  res.json(orders);
 };
 
 exports.getRevenueStats = async (req, res) => {
-  const payments = await Payment.find({ status: "SUCCESS" })
-    .populate("order");
+  const orders = await Order.find({ status: "PAID" });
 
-  const totalRevenue = payments.reduce(
-    (sum, p) => sum + p.order.amount,
+  const totalRevenue = orders.reduce(
+    (sum, o) => sum + o.amount,
     0
   );
 
   res.json({
-    totalRevenue,           // in paise
-    totalPayments: payments.length
+    totalRevenue,
+    totalPayments: orders.length
   });
 };

@@ -7,20 +7,20 @@ const pay = async (course) => {
 
   console.log("SENDING TO BACKEND:", {
     amount: course.price,
-    courseId: course._id
-  })
+    courseId: course._id,
+  });
 
   try {
     const { data } = await axios.post(
       "http://localhost:5000/api/orders/create",
       {
-        amount: course.price,   // already in paise
-        courseId: course._id    // THIS is what was missing
+        amount: course.price, // already in paise
+        courseId: course._id, // THIS is what was missing
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
@@ -29,13 +29,26 @@ const pay = async (course) => {
       amount: data.amount,
       currency: data.currency,
       order_id: data.razorpayOrderId,
-      handler: function () {
+      handler: async function (response) {
+        await axios.post(
+          "http://localhost:5000/api/payments/verify",
+          {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          }
+        );
+
         window.location.href = "/dashboard";
-      }
+      },
     };
 
     new window.Razorpay(options).open();
-
   } catch (err) {
     console.error(err.response?.data || err);
     alert(err.response?.data?.message || "Payment failed");
@@ -46,15 +59,16 @@ function Courses() {
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/courses")
-      .then(res => setCourses(res.data));
+    axios
+      .get("http://localhost:5000/api/courses")
+      .then((res) => setCourses(res.data));
   }, []);
 
   return (
     <div style={{ padding: 40 }}>
       <h2>Courses</h2>
 
-      {courses.map(course => (
+      {courses.map((course) => (
         <div key={course._id}>
           <h3>{course.title}</h3>
           <p>{course.description}</p>

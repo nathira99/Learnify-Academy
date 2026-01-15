@@ -13,7 +13,7 @@ function Navbar() {
           <LucideHeartHandshake className="text-slate-900" size={48} />
           {/* Logo / Brand */}
           <Link to="/" className="text-4xl font-bold text-slate-800">
-            Online Academy
+            Learnify Academy
           </Link>
         </div>
 

@@ -24,7 +24,7 @@ function AddCourse() {
       })
       .then(res => setTeachers(res.data))
       .catch(() => {});
-  }, []);
+  }, [API]);
 
   const submit = async (e) => {
     e.preventDefault();

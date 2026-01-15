@@ -16,7 +16,7 @@ function TeachersList() {
       .then(res => setTeachers(res.data))
       .catch(() => setTeachers([]))
       .finally(() => setLoading(false));
-  }, []);
+  }, [API]);
 
   return (
     <div className="min-h-screen bg-slate-50">

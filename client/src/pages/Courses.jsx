@@ -16,7 +16,7 @@ function Courses() {
       .get(`${API}/api/courses`)
       .then((res) => setCourses(res.data))
       .catch(() => {});
-  }, []);
+  }, [API]);
 
   useEffect(() => {
     const token = getToken();
@@ -36,7 +36,7 @@ function Courses() {
         setEnrolledCourseIds(ids);
       })
       .catch(() => setEnrolledCourseIds([]));
-  }, []);
+  }, [API]);
 
   const pay = async (course) => {
     const token = getToken();

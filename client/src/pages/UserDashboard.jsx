@@ -16,7 +16,7 @@ function UserDashboard() {
       })
       .then((res) => setEnrollments(res.data))
       .catch(() => setEnrollments([]));
-  }, [token]);
+  }, [API, token]);
 
   return (
     <div className="min-h-screen bg-slate-50">

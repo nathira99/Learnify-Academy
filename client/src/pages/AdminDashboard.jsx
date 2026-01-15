@@ -12,6 +12,7 @@ function AdminDashboard() {
   const [courseStats, setCourseStats] = useState(null);
   const [stats, setStats] = useState(null);
   const [payments, setPayments] = useState([]);
+
   const API = import.meta.env.REACT_APP_API_URL;
 
   // Course stats
@@ -22,7 +23,7 @@ function AdminDashboard() {
       })
       .then((res) => setCourseStats(res.data))
       .catch((err) => console.error("COURSE STATS ERROR:", err));
-  }, [token]);
+  }, [token, API]);
 
   useEffect(() => {
     const load = async () => {

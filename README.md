@@ -47,12 +47,12 @@ Designed to simulate a real-world online academy system.
 - Teacher assignment
 - Enrollment count
   
-# 🎓 Student Dashboard
+### 🎓 Student Dashboard
 - View enrolled courses
 - Access course details
 - Prevent re-enrollment of the same course
   
-# 🏠 Homepage
+### 🏠 Homepage
 - Hero section
 - Featured courses (from backend)
 - Faculty showcase
@@ -94,7 +94,7 @@ Order Management System/
 │
 └── README.md
 
-# 🔐 Environment Variables
+### 🔐 Environment Variables
 Create a .env file inside server/:
 
 ```

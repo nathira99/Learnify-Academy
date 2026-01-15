@@ -10,7 +10,7 @@ function CourseList() {
   const [loading, setLoading] = useState(true);
 
   const token = getToken();
-  const API = import.meta.env.VITE_REACT_APP_API_URL;
+  const API = import.meta.env.REACT_APP_API_URL;
 
   // ✅ Memoized functions
   const loadCourses = useCallback(async () => {

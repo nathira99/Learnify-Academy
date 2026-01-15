@@ -5,7 +5,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { API } from "../config/api";
+import API from "../config/api";
 import { useNavigate } from "react-router-dom";
 
 const features = [

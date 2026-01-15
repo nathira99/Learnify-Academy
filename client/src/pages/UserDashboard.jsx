@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { API } from "../config/api";
+import API from "../config/api";
 import { getToken } from "../utils/auth";
 
 function UserDashboard() {

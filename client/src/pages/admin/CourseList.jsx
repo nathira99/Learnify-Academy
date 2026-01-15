@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { API } from "../../config/api";
+import API from "../../config/api";
 import { getToken } from "../../utils/auth";
 import { Link } from "react-router-dom";
 import AdminLayout from "../../pages/admin/AdminLayout";

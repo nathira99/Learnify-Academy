@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getStats, getPayments } from "../services/adminApi";
 import AdminLayout from "../pages/admin/AdminLayout";
 import axios from "axios";
-import { API } from "../config/api";
+import API from "../config/api";
 import { getToken } from "../utils/auth";
 
 function AdminDashboard() {

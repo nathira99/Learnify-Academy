@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { getToken } from "../../utils/auth";
 import { Link } from "react-router-dom";
@@ -10,40 +10,39 @@ function CourseList() {
   const [loading, setLoading] = useState(true);
 
   const token = getToken();
+  const API = import.meta.env.VITE_REACT_APP_API_URL;
 
-  // Fetch courses
-  const loadCourses = async () => {
-    const res = await axios.get(
-      import.meta.env.VITE_REACT_APP_API_URL + "/api/courses/admin",
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+  // ✅ Memoized functions
+  const loadCourses = useCallback(async () => {
+    const res = await axios.get(`${API}/api/courses/admin`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     setCourses(res.data);
-  };
+  }, [API, token]);
 
-  // Fetch teachers
-  const loadTeachers = async () => {
-    const res = await axios.get(
-      import.meta.env.VITE_REACT_APP_API_URL + "/api/teachers",
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+  const loadTeachers = useCallback(async () => {
+    const res = await axios.get(`${API}/api/teachers`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     setTeachers(res.data);
-  };
+  }, [API, token]);
 
+  // ✅ Correct dependency array
   useEffect(() => {
     Promise.all([loadCourses(), loadTeachers()])
       .finally(() => setLoading(false));
-  }, []);
+  }, [loadCourses, loadTeachers]);
 
   // Toggle active status
   const toggleStatus = async (courseId) => {
     const res = await axios.patch(
-      import.meta.env.VITE_REACT_APP_API_URL + `/api/courses/admin/${courseId}/toggle`,
+      `${API}/api/courses/admin/${courseId}/toggle`,
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    setCourses(prev =>
-      prev.map(c =>
+    setCourses((prev) =>
+      prev.map((c) =>
         c._id === courseId ? { ...c, isActive: res.data.isActive } : c
       )
     );
@@ -52,14 +51,13 @@ function CourseList() {
   // Assign teacher
   const assignTeacher = async (courseId, teacherId) => {
     const res = await axios.patch(
-      import.meta.env.VITE_REACT_APP_API_URL + `/api/courses/admin/${courseId}/teacher`,
+      `${API}/api/courses/admin/${courseId}/teacher`,
       { teacherId },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    // IMPORTANT: backend returns updated course with populated teacher
-    setCourses(prev =>
-      prev.map(c => c._id === courseId ? res.data : c)
+    setCourses((prev) =>
+      prev.map((c) => (c._id === courseId ? res.data : c))
     );
   };
 

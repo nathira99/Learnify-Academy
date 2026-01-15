@@ -6,7 +6,7 @@ function TeachersList() {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API = import.meta.env.VITE_REACT_APP_API_URL;
+  const API = import.meta.env.REACT_APP_API_URL;
 
   useEffect(() => {
     axios

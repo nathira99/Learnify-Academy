@@ -7,7 +7,7 @@ function EditCourse() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const API = import.meta.env.VITE_REACT_APP_API_URL;
+  const API = import.meta.env.REACT_APP_API_URL;
 
   const [course, setCourse] = useState(null);
   const [teachers, setTeachers] = useState([]);

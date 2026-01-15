@@ -14,10 +14,12 @@ function AddCourse() {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const API = import.meta.env.REACT_APP_API_URL;
+
   /* 🔹 Fetch teachers */
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/users/teachers", {
+      .get(`${API}/api/users/teachers`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then(res => setTeachers(res.data))
@@ -37,7 +39,7 @@ function AddCourse() {
 
     try {
       await axios.post(
-        import.meta.env.VITE_REACT_APP_API_URL + "/api/courses",
+        `${API}/api/courses`,
         {
           title,
           image,

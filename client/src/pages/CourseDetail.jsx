@@ -7,6 +7,7 @@ function CourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const token = getToken();
+    const API = import.meta.env.REACT_APP_API_URL;
 
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,7 +15,7 @@ function CourseDetail() {
 
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + `/api/courses/${id}`, {
+      .get(`${API}/api/courses/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then((res) => setCourse(res.data))
@@ -27,7 +28,7 @@ function CourseDetail() {
     if (!token) return;
 
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/enrollments/my", {
+      .get(`${API}/api/enrollments/my`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {

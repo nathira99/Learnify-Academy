@@ -6,9 +6,11 @@ function TeachersList() {
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const API = import.meta.env.VITE_REACT_APP_API_URL;
+
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/teachers", {
+      .get(`${API}/api/teachers`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then(res => setTeachers(res.data))

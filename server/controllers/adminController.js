@@ -1,14 +1,6 @@
 const Order = require("../models/Order");
 const Payment = require("../models/Payment");
 
-// exports.getAllPayments = async (req, res) => {
-//   const orders = await Order.find({ status: "PAID" })
-//     .populate("user")
-//     .populate("course")
-//     .sort({ createdAt: -1 });
-
-//   res.json(orders);
-// };
 
 exports.getRevenueStats = async (req, res) => {
   const orders = await Order.find({ status: "PAID" });

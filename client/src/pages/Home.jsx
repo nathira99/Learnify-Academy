@@ -50,12 +50,14 @@ function Home() {
   const autoRef = useRef(null);
   const navigate = useNavigate();
 
+  const API = import.meta.env.REACT_APP_API_URL;
+
   const cardWidth = 260;
 
   /* ---------------- FETCH COURSES ---------------- */
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/courses")
+      .get(`${API}/api/courses`)
       .then((res) => setCourses(res.data))
       .catch(() => {});
   }, []);
@@ -63,7 +65,7 @@ function Home() {
   /* ---------------- FETCH FACULTY (BACKEND) ---------------- */
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/teachers")
+      .get(`${API}/api/teachers`)
       .then((res) => setFaculty(res.data))
       .catch(() => {});
   }, []);

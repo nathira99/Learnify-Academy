@@ -9,9 +9,11 @@ function Courses() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const API = import.meta.env.REACT_APP_API_URL;
+
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/courses")
+      .get(`${API}/api/courses`)
       .then((res) => setCourses(res.data))
       .catch(() => {});
   }, []);
@@ -24,7 +26,7 @@ function Courses() {
     }
 
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/enrollments/my", {
+      .get(`${API}/api/enrollments/my`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -48,7 +50,7 @@ function Courses() {
 
     try {
       const { data } = await axios.post(
-        import.meta.env.VITE_REACT_APP_API_URL + "/api/orders/create",
+        `${API}/api/orders/create`,
         {
           amount: course.price,
           courseId: course._id,
@@ -67,7 +69,7 @@ function Courses() {
         order_id: data.razorpayOrderId,
         handler: async function (response) {
           await axios.post(
-            import.meta.env.VITE_REACT_APP_API_URL + "/api/payments/verify",
+            `${API}/api/payments/verify`,
             {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
@@ -96,29 +98,31 @@ function Courses() {
         const isEnrolled = enrolledCourseIds.includes(course._id);
 
         return (
-          <div key={course._id} className="bg-white rounded-xl border p-5 hover:shadow-md transition cursor-pointer">
+          <div
+            key={course._id}
+            className="bg-white rounded-xl border p-5 hover:shadow-md transition cursor-pointer"
+          >
             <Link to={`/courses/${course._id}`} className="block">
-          
-            <img
-              src={course.image}
-              alt={course.title}
-              className="w-full h-40 object-cover rounded-lg mb-4"
-            />
-            <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
-              {course.category}
-            </span>
+              <img
+                src={course.image}
+                alt={course.title}
+                className="w-full h-40 object-cover rounded-lg mb-4"
+              />
+              <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+                {course.category}
+              </span>
 
-            <h3 className="text-lg font-medium mt-2 text-slate-800">
-              {course.title}
-            </h3>
+              <h3 className="text-lg font-medium mt-2 text-slate-800">
+                {course.title}
+              </h3>
 
-            <p className="text-gray-600 text-sm mt-1 line-clamp-3">
-              {course.description}
-            </p>
+              <p className="text-gray-600 text-sm mt-1 line-clamp-3">
+                {course.description}
+              </p>
 
-            <p className="font-semibold mt-3 text-slate-800">
-              ₹{course.price / 100}
-            </p>
+              <p className="font-semibold mt-3 text-slate-800">
+                ₹{course.price / 100}
+              </p>
             </Link>
 
             <button
@@ -133,7 +137,6 @@ function Courses() {
               {isEnrolled ? "Already Enrolled" : "Enroll Now"}
             </button>
           </div>
-    
         );
       })}
     </div>

@@ -7,9 +7,11 @@ function UserDashboard() {
   const [enrollments, setEnrollments] = useState([]);
   const token = getToken();
 
+  const API = import.meta.env.REACT_APP_API_URL;
+
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/enrollments/my", {
+      .get(`${API}/api/enrollments/my`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setEnrollments(res.data))

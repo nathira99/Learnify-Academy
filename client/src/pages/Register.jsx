@@ -8,11 +8,13 @@ function Register() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const API = import.meta.env.REACT_APP_API_URL;
+
   const submit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post(import.meta.env.VITE_REACT_APP_API_URL + "/api/auth/register", {
+      await axios.post(`${API}/api/auth/register`, {
         name,
         email,
         password,
@@ -59,7 +61,7 @@ function Register() {
             <input
               type="email"
               className="w-full border rounded-lg px-4 py-2"
-              placeholder="student@email.com"
+              placeholder="example@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

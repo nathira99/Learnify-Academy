@@ -12,11 +12,12 @@ function AdminDashboard() {
   const [courseStats, setCourseStats] = useState(null);
   const [stats, setStats] = useState(null);
   const [payments, setPayments] = useState([]);
+  const API = import.meta.env.REACT_APP_API_URL;
 
   // Course stats
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/courses/admin/stats", {
+      .get(`${API}/api/courses/admin/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setCourseStats(res.data))
@@ -24,22 +25,24 @@ function AdminDashboard() {
   }, [token]);
 
   useEffect(() => {
-  const load = async () => {
-    try {
-      const statsRes = await getStats(token);
-      const payRes = await getPayments(token, page);
+    const load = async () => {
+      try {
+        const statsRes = await getStats(token);
+        const payRes = await getPayments(token, page);
 
-      setStats(statsRes.data);
-      setPayments(Array.isArray(payRes.data.payments) ? payRes.data.payments : []);
-      setPages(payRes.data.pagination.pages);
-    } catch (err) {
-      console.error("ADMIN DASHBOARD ERROR:", err);
-      setPayments([]); //  safety
-    }
-  };
+        setStats(statsRes.data);
+        setPayments(
+          Array.isArray(payRes.data.payments) ? payRes.data.payments : []
+        );
+        setPages(payRes.data.pagination.pages);
+      } catch (err) {
+        console.error("ADMIN DASHBOARD ERROR:", err);
+        setPayments([]); //  safety
+      }
+    };
 
-  load();
-}, [token, page]);
+    load();
+  }, [token, page]);
 
   return (
     <AdminLayout>

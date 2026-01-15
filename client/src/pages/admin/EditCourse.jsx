@@ -7,6 +7,8 @@ function EditCourse() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const API = import.meta.env.VITE_REACT_APP_API_URL;
+
   const [course, setCourse] = useState(null);
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -14,7 +16,7 @@ function EditCourse() {
   /* 🔹 Fetch course */
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + `/api/courses/${id}`, {
+      .get(`${API}/api/courses/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then(res => setCourse(res.data))
@@ -24,7 +26,7 @@ function EditCourse() {
   /* 🔹 Fetch teachers */
   useEffect(() => {
     axios
-      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/teachers", {
+      .get(`${API}/api/teachers`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then(res => setTeachers(res.data))
@@ -39,7 +41,7 @@ function EditCourse() {
 
     try {
       await axios.put(
-        import.meta.env.VITE_REACT_APP_API_URL + `/api/courses/${id}`,
+        `${API}/api/courses/${id}`,
         {
           ...course,
           price: Number(course.price),

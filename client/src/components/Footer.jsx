@@ -7,7 +7,7 @@ function Footer() {
 
         {/* About */}
         <div>
-          <h3 className="font-semibold mb-3">LearnHub</h3>
+          <h3 className="font-semibold mb-3">Learnify Academy</h3>
           <p className="text-sm text-gray-400 pr-12">
             A modern online learning platform for 
             academic and skill-based education.
@@ -22,6 +22,7 @@ function Footer() {
             <li><Link to="/courses" className="hover:underline">Courses</Link></li>
             <li><Link to="/login" className="hover:underline">Login</Link></li>
             <li><Link to="/register" className="hover:underline">Register</Link></li>
+            <li><Link to="/about" className="hover:underline">About us</Link></li>
           </ul>
         </div>
 

@@ -17,7 +17,7 @@ function AddCourse() {
   /* 🔹 Fetch teachers */
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/users/teachers", {
+      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/users/teachers", {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then(res => setTeachers(res.data))
@@ -37,7 +37,7 @@ function AddCourse() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/courses",
+        import.meta.env.VITE_REACT_APP_API_URL + "/api/courses",
         {
           title,
           image,

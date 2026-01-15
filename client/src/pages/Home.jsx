@@ -55,7 +55,7 @@ function Home() {
   /* ---------------- FETCH COURSES ---------------- */
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/courses")
+      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/courses")
       .then((res) => setCourses(res.data))
       .catch(() => {});
   }, []);
@@ -63,7 +63,7 @@ function Home() {
   /* ---------------- FETCH FACULTY (BACKEND) ---------------- */
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/teachers")
+      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/teachers")
       .then((res) => setFaculty(res.data))
       .catch(() => {});
   }, []);

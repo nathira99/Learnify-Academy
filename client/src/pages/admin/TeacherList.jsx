@@ -8,7 +8,7 @@ function TeachersList() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/teachers", {
+      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/teachers", {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then(res => setTeachers(res.data))

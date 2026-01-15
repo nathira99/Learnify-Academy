@@ -9,7 +9,7 @@ function UserDashboard() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/enrollments/my", {
+      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/enrollments/my", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setEnrollments(res.data))

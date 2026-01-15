@@ -14,7 +14,7 @@ function EditCourse() {
   /* 🔹 Fetch course */
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/courses/${id}`, {
+      .get(import.meta.env.VITE_REACT_APP_API_URL + `/api/courses/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then(res => setCourse(res.data))
@@ -24,7 +24,7 @@ function EditCourse() {
   /* 🔹 Fetch teachers */
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/teachers", {
+      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/teachers", {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then(res => setTeachers(res.data))
@@ -39,7 +39,7 @@ function EditCourse() {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/courses/${id}`,
+        import.meta.env.VITE_REACT_APP_API_URL + `/api/courses/${id}`,
         {
           ...course,
           price: Number(course.price),

@@ -11,7 +11,7 @@ function Courses() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/courses")
+      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/courses")
       .then((res) => setCourses(res.data))
       .catch(() => {});
   }, []);
@@ -24,7 +24,7 @@ function Courses() {
     }
 
     axios
-      .get("http://localhost:5000/api/enrollments/my", {
+      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/enrollments/my", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -48,7 +48,7 @@ function Courses() {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/orders/create",
+        import.meta.env.VITE_REACT_APP_API_URL + "/api/orders/create",
         {
           amount: course.price,
           courseId: course._id,
@@ -67,7 +67,7 @@ function Courses() {
         order_id: data.razorpayOrderId,
         handler: async function (response) {
           await axios.post(
-            "http://localhost:5000/api/payments/verify",
+            import.meta.env.VITE_REACT_APP_API_URL + "/api/payments/verify",
             {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,

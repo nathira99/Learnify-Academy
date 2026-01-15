@@ -16,7 +16,7 @@ function AdminDashboard() {
   // Course stats
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/courses/admin/stats", {
+      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/courses/admin/stats", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setCourseStats(res.data))

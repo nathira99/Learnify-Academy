@@ -14,7 +14,7 @@ function CourseList() {
   // Fetch courses
   const loadCourses = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/courses/admin",
+      import.meta.env.VITE_REACT_APP_API_URL + "/api/courses/admin",
       { headers: { Authorization: `Bearer ${token}` } }
     );
     setCourses(res.data);
@@ -23,7 +23,7 @@ function CourseList() {
   // Fetch teachers
   const loadTeachers = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/teachers",
+      import.meta.env.VITE_REACT_APP_API_URL + "/api/teachers",
       { headers: { Authorization: `Bearer ${token}` } }
     );
     setTeachers(res.data);
@@ -37,7 +37,7 @@ function CourseList() {
   // Toggle active status
   const toggleStatus = async (courseId) => {
     const res = await axios.patch(
-      `http://localhost:5000/api/courses/admin/${courseId}/toggle`,
+      import.meta.env.VITE_REACT_APP_API_URL + `/api/courses/admin/${courseId}/toggle`,
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -52,7 +52,7 @@ function CourseList() {
   // Assign teacher
   const assignTeacher = async (courseId, teacherId) => {
     const res = await axios.patch(
-      `http://localhost:5000/api/courses/admin/${courseId}/teacher`,
+      import.meta.env.VITE_REACT_APP_API_URL + `/api/courses/admin/${courseId}/teacher`,
       { teacherId },
       { headers: { Authorization: `Bearer ${token}` } }
     );

@@ -14,7 +14,7 @@ function CourseDetail() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/courses/${id}`, {
+      .get(import.meta.env.VITE_REACT_APP_API_URL + `/api/courses/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
       .then((res) => setCourse(res.data))
@@ -27,7 +27,7 @@ function CourseDetail() {
     if (!token) return;
 
     axios
-      .get("http://localhost:5000/api/enrollments/my", {
+      .get(import.meta.env.VITE_REACT_APP_API_URL + "/api/enrollments/my", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {

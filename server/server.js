@@ -10,7 +10,12 @@ const app = express();
 app.use("/api/webhook", require("./routes/webhookRoutes"));
 
 // Middleware
-app.use(cors());
+app.use(cors(
+  {
+    origin: process.env.CLIENT_URL,
+    credentials: true
+  }
+));
 app.use(express.json());
 
 app.use("/api/auth", require("./routes/authRoutes"));

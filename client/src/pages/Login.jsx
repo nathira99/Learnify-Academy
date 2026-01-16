@@ -22,7 +22,6 @@ function Login() {
 
       if (role === "admin") navigate("/admin");
       else navigate(redirectTo);
-      console.log(res.data);
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     }

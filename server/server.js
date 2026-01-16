@@ -15,7 +15,7 @@ app.use(cors(
     origin: "*",
   }
 ));
-app.use(express.static(path.join(__dirname,"client/build")));
+app.use(express.json());
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
@@ -25,9 +25,6 @@ app.use("/api/enrollments", require("./routes/enrollmentRoutes"));
 app.use("/api/courses", require("./routes/courseRoutes"));
 app.use("/api/teachers", require("./routes/teacherRoutes"));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname,"client/build/index.html"));
-});
 
 app.get("/api/protected", protect, (req, res) => {
   res.json({ message: "Protected route", user: req.user });

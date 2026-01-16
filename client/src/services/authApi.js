@@ -10,4 +10,4 @@ export const registerUser = (data) => {
   return axios.post(`${API}/api/auth/register`, data);
 };
 
-console.log(API);
+// console.log(API);

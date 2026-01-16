@@ -2,7 +2,7 @@ import { useState } from "react";
 import { loginUser } from "../services/authApi";
 import { setToken, getRole } from "../utils/auth";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import API from "../config/api";
+// import API from "../config/api";
 
 function Login() {
   const [email, setEmail] = useState("");

@@ -133,20 +133,7 @@ function CourseList() {
 
                     {/* Teacher Assign */}
                     <td className="px-4 py-3">
-                      <select
-                        value={c.teacher?._id || ""}
-                        onChange={(e) =>
-                          assignTeacher(c._id, e.target.value)
-                        }
-                        className="border rounded px-2 py-1 text-sm"
-                      >
-                        <option value="">Unassigned</option>
-                        {teachers.map(t => (
-                          <option key={t._id} value={t._id}>
-                            {t.name}
-                          </option>
-                        ))}
-                      </select>
+                      {c.teacher}
                     </td>
 
                     {/* Enrolled Count */}

@@ -1,18 +1,18 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { BookOpenText, Edit3, PlusCircle } from "lucide-react";
 import API from "../../config/api";
 import { getToken } from "../../utils/auth";
-import { Link } from "react-router-dom";
 import AdminLayout from "../../pages/admin/AdminLayout";
+import Button from "../../components/ui/Button";
 
 function CourseList() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const token = getToken();
-  // const API = import.meta.env.REACT_APP_API_URL;
 
-  // ✅ Memoized functions
   const loadCourses = useCallback(async () => {
     const res = await axios.get(`${API}/api/courses/admin`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -20,19 +20,12 @@ function CourseList() {
     setCourses(res.data);
   }, [token]);
 
-  // const loadTeachers = useCallback(async () => {
-  //   const res = await axios.get(`${API}/api/teachers`, {
-  //     headers: { Authorization: `Bearer ${token}` },
-  //   });
-  //   setTeachers(res.data);
-  // }, [token]);
-
-  // ✅ Correct dependency array
   useEffect(() => {
-    loadCourses().finally(() => setLoading(false));
+    loadCourses()
+      .catch(() => setCourses([]))
+      .finally(() => setLoading(false));
   }, [loadCourses]);
 
-  // Toggle active status
   const toggleStatus = async (courseId) => {
     const res = await axios.patch(
       `${API}/api/courses/admin/${courseId}/toggle`,
@@ -41,118 +34,109 @@ function CourseList() {
     );
 
     setCourses((prev) =>
-      prev.map((c) =>
-        c._id === courseId ? { ...c, isActive: res.data.isActive } : c
+      prev.map((course) =>
+        course._id === courseId ? { ...course, isActive: res.data.isActive } : course
       )
     );
   };
 
-  // Assign teacher
-  // const assignTeacher = async (courseId, teacherId) => {
-  //   const res = await axios.patch(
-  //     `${API}/api/courses/admin/${courseId}/teacher`,
-  //     { teacherId },
-  //     { headers: { Authorization: `Bearer ${token}` } }
-  //   );
-
-  //   setCourses((prev) =>
-  //     prev.map((c) => (c._id === courseId ? res.data : c))
-  //   );
-  // };
-
   return (
     <AdminLayout>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-medium text-slate-900">
-          Manage Courses
-        </h1>
-        <p className="text-slate-600 mt-1">
-          Activate courses, assign teachers, and monitor enrollments
-        </p>
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <span className="eyebrow">Course management</span>
+          <h1 className="heading-section mt-3">Manage Courses</h1>
+          <p className="text-lead mt-3">
+            Activate courses, review categories, and monitor enrollments.
+          </p>
+        </div>
+
+        <Button as={Link} to="/admin/add-course" variant="dark" className="group">
+          <PlusCircle size={18} />
+          Add Course
+        </Button>
       </div>
 
-      {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-        <div className="px-6 py-4 border-b flex justify-between">
-          <h2 className="text-lg font-medium">Course List</h2>
-          <span className="text-sm text-slate-500">
-            {courses.length} courses
-          </span>
+      <section className="surface-panel overflow-hidden">
+        <div className="flex flex-col gap-3 border-b border-ink-200/70 px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
+              <BookOpenText size={22} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-ink-950">Course List</h2>
+              <p className="text-sm text-ink-500">Manage catalog visibility</p>
+            </div>
+          </div>
+          <span className="badge-brand">{courses.length} courses</span>
         </div>
 
         {loading ? (
-          <div className="p-6 text-slate-500">Loading courses…</div>
+          <TableSkeleton />
+        ) : courses.length === 0 ? (
+          <EmptyState />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-600">
+            <table className="w-full min-w-[820px] text-sm">
+              <thead className="bg-ink-50 text-xs uppercase tracking-wide text-ink-500">
                 <tr>
-                  <th className="px-4 py-3 text-left">Title</th>
-                  <th className="px-4 py-3 text-left">Category</th>
-                  <th className="px-4 py-3 text-center">Status</th>
-                  <th className="px-4 py-3 text-left">Teacher</th>
-                  <th className="px-4 py-3 text-center">Enrolled</th>
-                  <th className="px-4 py-3 text-center">Action</th>
+                  <th className="px-5 py-4 text-left font-semibold">Title</th>
+                  <th className="px-5 py-4 text-left font-semibold">Category</th>
+                  <th className="px-5 py-4 text-center font-semibold">Status</th>
+                  <th className="px-5 py-4 text-left font-semibold">Teacher</th>
+                  <th className="px-5 py-4 text-center font-semibold">Enrolled</th>
+                  <th className="px-5 py-4 text-center font-semibold">Action</th>
                 </tr>
               </thead>
-
-              <tbody>
-                {courses.map(c => (
+              <tbody className="divide-y divide-ink-200/70">
+                {courses.map((course) => (
                   <tr
-                    key={c._id}
-                    className="border-t hover:bg-slate-50 transition"
+                    key={course._id}
+                    className="transition duration-200 ease-premium hover:bg-brand-50/50"
                   >
-                    {/* Title */}
-                    <td className="px-4 py-3 font-medium text-slate-800">
-                      {c.title}
+                    <td className="px-5 py-4 font-semibold text-ink-900">
+                      {course.title}
                     </td>
-
-                    {/* Category */}
-                    <td className="px-4 py-3 text-slate-600">
-                      {c.category}
+                    <td className="px-5 py-4">
+                      <span className="badge">{course.category}</span>
                     </td>
-
-                    {/* Status Toggle */}
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-5 py-4 text-center">
                       <button
-                        onClick={() => toggleStatus(c._id)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
-                          c.isActive ? "bg-emerald-500" : "bg-gray-300"
+                        type="button"
+                        onClick={() => toggleStatus(course._id)}
+                        className={`relative inline-flex h-7 w-12 items-center rounded-full transition duration-200 ease-premium ${
+                          course.isActive ? "bg-emerald-500" : "bg-ink-300"
                         }`}
+                        aria-label="Toggle course status"
                       >
                         <span
-                          className={`inline-block h-4 w-4 bg-white rounded-full transform transition ${
-                            c.isActive ? "translate-x-6" : "translate-x-1"
+                          className={`inline-block h-5 w-5 rounded-full bg-white shadow transition duration-200 ease-premium ${
+                            course.isActive ? "translate-x-6" : "translate-x-1"
                           }`}
                         />
                       </button>
                     </td>
-
-                    {/* Teacher*/}
-                    <td className="px-4 py-3">
-                      {c.teachers?.name || (
-                        <span className="text-sm text-slate-500">
-                          Unassigned
-                        </span>
+                    <td className="px-5 py-4 text-ink-600">
+                      {course.teachers?.name || (
+                        <span className="text-ink-400">Unassigned</span>
                       )}
                     </td>
-
-                    {/* Enrolled Count */}
-                    <td className="px-4 py-3 text-center">
-                      <span className="px-3 py-1 text-xs rounded-full bg-slate-100 text-slate-700">
-                        {c.enrolledCount}
+                    <td className="px-5 py-4 text-center">
+                      <span className="rounded-full bg-ink-100 px-3 py-1 text-xs font-semibold text-ink-700">
+                        {course.enrolledCount}
                       </span>
                     </td>
-
-                    {/* Edit */}
-                    <td className="px-4 py-3 text-center">
-                      <Link
-                        to={`/admin/edit-course/${c._id}`}
-                        className="text-slate-700 font-medium hover:underline"
+                    <td className="px-5 py-4 text-center">
+                      <Button
+                        as={Link}
+                        to={`/admin/edit-course/${course._id}`}
+                        variant="ghost"
+                        size="sm"
+                        className="text-brand-700 hover:bg-brand-50"
                       >
+                        <Edit3 size={15} />
                         Edit
-                      </Link>
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -160,8 +144,32 @@ function CourseList() {
             </table>
           </div>
         )}
-      </div>
+      </section>
     </AdminLayout>
+  );
+}
+
+function TableSkeleton() {
+  return (
+    <div className="space-y-3 p-5">
+      {[0, 1, 2, 3].map((item) => (
+        <div key={item} className="h-12 animate-pulse rounded-xl bg-ink-100" />
+      ))}
+    </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="px-6 py-14 text-center">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
+        <BookOpenText size={27} />
+      </div>
+      <h3 className="mt-4 text-xl font-semibold text-ink-950">No courses found</h3>
+      <p className="mt-2 text-sm text-ink-500">
+        Add your first course to start building the catalog.
+      </p>
+    </div>
   );
 }
 

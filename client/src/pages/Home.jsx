@@ -1,12 +1,21 @@
 import {
+  ArrowRight,
   BookOpenText,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   LucideUsersRound,
   ShieldCheck,
+  Sparkles,
 } from "lucide-react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import API from "../config/api";
 import { useNavigate } from "react-router-dom";
+import CourseCard from "../components/CourseCard";
+import Button from "../components/ui/Button";
+import Container from "../components/ui/Container";
+import Reveal, { Stagger, StaggerItem } from "../components/ui/Motion";
 
 const features = [
   {
@@ -41,6 +50,42 @@ const features = [
   },
 ];
 
+const heroStats = [
+  { value: "3+", label: "Learning tracks" },
+  { value: "24/7", label: "Course access" },
+  { value: "100%", label: "Secure checkout" },
+];
+
+const trustItems = [
+  "Structured curriculum",
+  "Expert guidance",
+  "Flexible learning",
+];
+
+const benefitItems = [
+  {
+    icon: BookOpenText,
+    title: "Structured Learning",
+    copy: "Well-organized courses designed for clarity and progress.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Secure Payments",
+    copy: "Trusted and verified payment process with clear enrollment flow.",
+  },
+  {
+    icon: LucideUsersRound,
+    title: "Student-Centered",
+    copy: "Learn at your own pace with access to enrolled courses anytime.",
+  },
+];
+
+const testimonials = [
+  "The courses are clearly structured and easy to follow. I always knew what to learn next.",
+  "The instructors explain concepts patiently and practically. Very helpful experience.",
+  "This platform helped me gain confidence and consistency in my learning journey.",
+];
+
 function Home() {
   const [courses, setCourses] = useState([]);
   const [faculty, setFaculty] = useState([]);
@@ -51,11 +96,8 @@ function Home() {
   const autoRef = useRef(null);
   const navigate = useNavigate();
 
-  // const API = import.meta.env.REACT_APP_API_URL;
-
   const cardWidth = 260;
 
-  /* ---------------- FETCH COURSES ---------------- */
   useEffect(() => {
     axios
       .get(`${API}/api/courses`)
@@ -63,7 +105,6 @@ function Home() {
       .catch(() => {});
   }, []);
 
-  /* ---------------- FETCH FACULTY (BACKEND) ---------------- */
   useEffect(() => {
     axios
       .get(`${API}/api/teachers`)
@@ -71,13 +112,11 @@ function Home() {
       .catch(() => {});
   }, []);
 
-  /* ---------------- EXTENDED LIST (INFINITE) ---------------- */
   const extendedFaculty =
     faculty.length > 1
       ? [faculty[faculty.length - 1], ...faculty, faculty[0]]
       : faculty;
 
-  /* ---------------- AUTO SCROLL ---------------- */
   useEffect(() => {
     if (!faculty.length) return;
 
@@ -88,7 +127,6 @@ function Home() {
     return () => clearInterval(autoRef.current);
   }, [faculty]);
 
-  /* ---------------- SLIDE EFFECT ---------------- */
   useEffect(() => {
     if (!sliderRef.current) return;
 
@@ -97,7 +135,6 @@ function Home() {
     sliderRef.current.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
   }, [currentIndex]);
 
-  /* ---------------- LOOP CORRECTION ---------------- */
   useEffect(() => {
     const slider = sliderRef.current;
     if (!slider) return;
@@ -118,7 +155,6 @@ function Home() {
     return () => slider.removeEventListener("transitionend", onTransitionEnd);
   }, [currentIndex, extendedFaculty.length]);
 
-  /* ---------------- CONTROLS ---------------- */
   const stopAuto = () => clearInterval(autoRef.current);
 
   const startAuto = () => {
@@ -140,129 +176,267 @@ function Home() {
 
   return (
     <div className="bg-gray-50">
-      {/* HERO */}
-      <section
-        className="relative bg-cover bg-center text-white"
-        style={{ backgroundImage: "url('/images/hero/hero-bg.jpg')" }}
-      >
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="relative max-w-6xl mx-auto px-4 py-28 text-center">
-          <h1 className="text-4xl md:text-5xl font-medium">
-            Learn Smarter. Grow Faster. Succeed Confidently.
-          </h1>
-          <p className="mt-6 text-lg max-w-2xl mx-auto text-gray-200">
-            A modern learning platform built for clarity and growth.
-          </p>
-        </div>
+      <section className="relative isolate overflow-hidden bg-ink-950 text-white">
+        <div
+          className="absolute inset-0 -z-20 bg-cover bg-center opacity-35"
+          style={{ backgroundImage: "url('/images/hero/hero-bg.jpg')" }}
+        />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_20%,rgba(47,143,245,0.42),transparent_30%),radial-gradient(circle_at_78%_18%,rgba(17,185,129,0.24),transparent_28%),linear-gradient(135deg,rgba(2,6,23,0.98),rgba(15,23,42,0.86)_48%,rgba(16,40,77,0.92))]" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-gray-50 to-transparent" />
+
+        <Container size="wide" className="relative py-20 sm:py-24 lg:py-28">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.04fr_0.96fr]">
+            <Reveal className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left">
+              <div className="eyebrow gap-2 border-white/20 bg-white/10 text-brand-100 backdrop-blur">
+                <Sparkles size={14} />
+                Premium online academy
+              </div>
+
+              <h1 className="mt-5 text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-display-xl">
+                Learn smarter with a polished path from curiosity to mastery.
+              </h1>
+
+              <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg lg:mx-0">
+                A modern learning platform built for structured courses, expert
+                guidance, flexible access, and confident student progress.
+              </p>
+
+              <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:justify-center lg:justify-start">
+                <Button
+                  type="button"
+                  size="lg"
+                  onClick={() => navigate("/courses")}
+                  className="group"
+                >
+                  Explore Courses
+                  <ArrowRight
+                    size={18}
+                    className="transition duration-200 ease-premium group-hover:translate-x-1"
+                  />
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="lg"
+                  onClick={() => navigate("/about")}
+                  className="border-white/25 bg-white/12 text-white shadow-none backdrop-blur hover:border-white/40 hover:bg-white/18 hover:text-white"
+                >
+                  Learn More
+                </Button>
+              </div>
+
+              <div className="mt-8 flex flex-wrap justify-center gap-2 lg:justify-start">
+                {trustItems.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-medium text-slate-100 shadow-inset backdrop-blur"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </Reveal>
+
+            <Reveal className="relative mx-auto w-full max-w-xl lg:mx-0">
+              <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-brand-400/20 via-white/10 to-accent-mint/20 blur-2xl" />
+              <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/12 p-3 shadow-premium backdrop-blur-xl">
+                <div className="overflow-hidden rounded-2xl border border-white/15 bg-white/10">
+                  <img
+                    src="/images/hero/hero-bg.jpg"
+                    alt="Learnify Academy online learning"
+                    className="h-64 w-full object-cover opacity-90 sm:h-80"
+                  />
+                </div>
+
+                <div className="absolute left-6 top-6 rounded-2xl border border-white/20 bg-white/82 p-4 text-ink-900 shadow-premium backdrop-blur-xl">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">
+                    Live learning
+                  </p>
+                  <p className="mt-1 text-2xl font-semibold text-ink-950">
+                    Clear progress
+                  </p>
+                </div>
+
+                <div className="absolute bottom-6 right-6 rounded-2xl border border-white/20 bg-ink-950/78 p-4 text-white shadow-premium backdrop-blur-xl">
+                  <p className="text-xs font-medium text-slate-300">
+                    Student focus
+                  </p>
+                  <p className="mt-1 text-lg font-semibold">Guided paths</p>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+
+          <Stagger className="mt-14 grid gap-3 rounded-3xl border border-white/14 bg-white/10 p-3 shadow-inset backdrop-blur-xl sm:grid-cols-3">
+            {heroStats.map((stat) => (
+              <StaggerItem
+                key={stat.label}
+                className="rounded-2xl border border-white/12 bg-white/10 px-5 py-5 text-center transition duration-200 ease-premium hover:-translate-y-0.5 hover:bg-white/14"
+              >
+                <p className="text-3xl font-semibold text-white">{stat.value}</p>
+                <p className="mt-1 text-sm text-slate-300">{stat.label}</p>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </Container>
       </section>
 
-      {/* COURSES */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-medium mb-10">Explore Our Courses</h2>
+      <section className="section bg-white">
+        <Container size="wide">
+          <Reveal className="section-header">
+            <span className="eyebrow">Featured courses</span>
+            <h2 className="heading-section">Explore Our Courses</h2>
+            <p className="text-lead mt-4">
+              Start with structured programs designed for steady progress,
+              clear outcomes, and flexible learning.
+            </p>
+          </Reveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             {courses.slice(0, 3).map((course) => (
-              <div
-                key={course._id}
-                className="bg-gray-50 border rounded-xl p-6 text-left"
-              >
-                <img
-                  src={course.image}
-                  alt={course.title}
-                  className="w-full h-40 object-cover rounded-lg mb-4"
-                />
-                <h3 className="text-lg font-medium">{course.title}</h3>
-                <p className="text-sm text-gray-600 mt-2">
-                  {course.description.slice(0, 90)}...
-                </p>
-              </div>
+              <CourseCard key={course._id} course={course} />
             ))}
           </div>
 
-          <button
-            onClick={() => navigate("/courses")}
-            className="mt-12 px-6 py-3 bg-slate-800 text-white rounded"
-          >
-            View All Courses
-          </button>
-        </div>
-      </section>
-      <section className="py-16 bg-slate-50">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div>
-            <BookOpenText className="text-blue-600 mx-auto mb-2" size={32} />
-            <h3 className="font-semibold text-lg mb-2">Structured Learning</h3>
-            <p className="text-gray-600 text-sm">
-              Well-organized courses designed for clarity and progress.
-            </p>
+          <div className="mt-12 flex justify-center">
+            <Button
+              type="button"
+              variant="dark"
+              size="lg"
+              className="group"
+              onClick={() => navigate("/courses")}
+            >
+              View All Courses
+              <ArrowRight
+                size={18}
+                className="transition duration-200 ease-premium group-hover:translate-x-1"
+              />
+            </Button>
           </div>
-          <div>
-            <ShieldCheck className="text-blue-600 mx-auto mb-2" size={32} />
-            <h3 className="font-semibold text-lg mb-2">Secure Payments</h3>
-            <p className="text-gray-600 text-sm">
-              Trusted and verified payment process with clear enrollment flow.
-            </p>
-          </div>
-          <div>
-            <LucideUsersRound
-              className="text-blue-600 mx-auto mb-2"
-              size={32}
-            />
-            <h3 className="font-semibold text-lg mb-2">Student-Centered</h3>
-            <p className="text-gray-600 text-sm">
-              Learn at your own pace with access to enrolled courses anytime.
-            </p>
-          </div>
-        </div>
+        </Container>
       </section>
 
-      <section className="py-10 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
-          {features.map((f, i) => (
-            <div key={i} className="bg-white p-4 rounded-2xl text-center">
-              <div
-                className={`${f.color} w-14 h-14 rounded-full mx-auto flex items-center justify-center text-white mb-6`}
-              >
-                ✓
-              </div>
-              <h3 className="text-xl font-semibold my-6">{f.title}</h3>
-              <ul className="space-y-3 text-sm text-slate-600">
-                {f.items.map((it, idx) => (
-                  <li key={idx}>• {it}</li>
-                ))}
-              </ul>
+      <section className="section bg-app-shell">
+        <Container size="wide">
+          <div className="section-header">
+            <span className="eyebrow">Why Learnify</span>
+            <h2 className="heading-section">Built around clarity and momentum</h2>
+            <p className="text-lead mt-4">
+              Each part of the platform supports a simple flow: understand the
+              path, enroll securely, and keep moving through your lessons.
+            </p>
+          </div>
+
+          <Stagger className="grid grid-cols-1 gap-5 md:grid-cols-3">
+            {benefitItems.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <StaggerItem
+                  key={item.title}
+                  className="glass-panel group p-6 text-center transition duration-200 ease-premium hover:-translate-y-1 hover:shadow-premium"
+                >
+                  <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-sheen text-white shadow-glow transition duration-200 ease-premium group-hover:-translate-y-0.5">
+                    <Icon size={28} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-ink-950">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-ink-600">
+                    {item.copy}
+                  </p>
+                </StaggerItem>
+              );
+            })}
+          </Stagger>
+        </Container>
+      </section>
+
+      <section className="section bg-white">
+        <Container size="wide">
+          <div className="mb-10 grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+            <div>
+              <span className="eyebrow">Learning experience</span>
+              <h2 className="heading-section">Programs that feel easy to follow</h2>
             </div>
-          ))}
-        </div>
+            <p className="text-lead lg:max-w-2xl lg:justify-self-end">
+              Clear curriculum design, guided instruction, and flexible access
+              keep the experience organized without adding complexity.
+            </p>
+          </div>
+
+          <Stagger className="grid gap-6 md:grid-cols-3">
+            {features.map((f, i) => (
+              <StaggerItem
+                key={i}
+                className="card-premium p-7 transition duration-200 ease-premium hover:-translate-y-1"
+              >
+                <div
+                  className={`${f.color} mb-6 flex h-12 w-12 items-center justify-center rounded-2xl text-white shadow-soft`}
+                >
+                  <CheckCircle2 size={24} />
+                </div>
+                <h3 className="text-xl font-semibold text-ink-950">{f.title}</h3>
+                <ul className="mt-6 space-y-3 text-sm leading-6 text-ink-600">
+                  {f.items.map((it, idx) => (
+                    <li key={idx} className="flex gap-3">
+                      <CheckCircle2
+                        size={16}
+                        className="mt-0.5 shrink-0 text-accent-mint"
+                      />
+                      <span>{it}</span>
+                    </li>
+                  ))}
+                </ul>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </Container>
       </section>
 
-      {/* FACULTY SLIDER */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 relative">
-          <h2 className="text-3xl font-medium mb-10">Our Faculty</h2>
+      <section className="section bg-app-shell">
+        <Container size="wide">
+          <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <span className="eyebrow">Faculty</span>
+              <h2 className="heading-section">Our Faculty</h2>
+              <p className="text-lead mt-4">
+                Learn with instructors focused on clear explanations,
+                practical guidance, and consistent student support.
+              </p>
+            </div>
 
-          {/* Arrows */}
-          <button
-            type="button"
-            onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white border rounded-full w-10 h-10 shadow flex items-center justify-center z-10"
-          >
-            ←
-          </button>
-
-          <button
-            type="button"
-            onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white border rounded-full w-10 h-10 shadow flex items-center justify-center z-10"
-          >
-            →
-          </button>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={prevSlide}
+                className="h-11 w-11 rounded-full px-0"
+                aria-label="Previous faculty"
+              >
+                <ChevronLeft size={20} />
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={nextSlide}
+                className="h-11 w-11 rounded-full px-0"
+                aria-label="Next faculty"
+              >
+                <ChevronRight size={20} />
+              </Button>
+            </div>
+          </div>
 
           <div
-            className="overflow-hidden px-12"
+            ref={scrollRef}
+            className="overflow-hidden rounded-3xl border border-white/70 bg-white/55 p-4 shadow-soft backdrop-blur-xl sm:p-6"
             style={{ touchAction: "pan-x" }}
-            onWheel={(e) => scrollRef.current.scrollLeft += e.deltaY}
+            onWheel={(e) => {
+              if (scrollRef.current) scrollRef.current.scrollLeft += e.deltaY;
+            }}
             onMouseEnter={stopAuto}
             onMouseLeave={startAuto}
           >
@@ -270,76 +444,66 @@ function Home() {
               {extendedFaculty.map((f, i) => (
                 <div
                   key={i}
-                  className="min-w-[240px] bg-gray-50 border rounded-xl p-6 text-center"
+                  className="min-w-[240px] rounded-2xl border border-ink-200/70 bg-white p-6 text-center shadow-soft transition duration-200 ease-premium hover:-translate-y-1 hover:shadow-premium"
                 >
                   <img
                     src={f.image}
                     alt={f.name}
-                    className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                    className="mx-auto mb-4 h-24 w-24 rounded-2xl object-cover shadow-soft"
                   />
-                  <h3 className="text-lg font-medium">{f.name}</h3>
-                  <p className="text-sm text-gray-600">{f.bio}</p>
+                  <h3 className="text-lg font-semibold text-ink-950">{f.name}</h3>
+                  <p className="mt-2 text-sm leading-6 text-ink-600">{f.bio}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Dots */}
-          <div className="flex justify-center gap-2 mt-6">
+          <div className="mt-6 flex justify-center gap-2">
             {faculty.map((_, i) => (
               <button
                 key={i}
                 type="button"
                 tabIndex={-1}
                 onClick={() => setCurrentIndex(i + 1)}
-                className={`w-2.5 h-2.5 rounded-full ${
+                className={`h-2.5 rounded-full transition-all duration-200 ease-premium ${
                   currentIndex === i + 1
-                    ? "bg-slate-800"
-                    : "bg-slate-300"
+                    ? "w-8 bg-brand-600"
+                    : "w-2.5 bg-ink-300 hover:bg-ink-400"
                 }`}
               />
             ))}
           </div>
-        </div>
+        </Container>
       </section>
 
-      {/* Feedback */}
-      <section className="py-24 bg-white">
-  <div className="max-w-6xl mx-auto px-4">
-    <h2 className="text-3xl font-medium text-slate-900 text-center mb-14">
-      What Our Students Say
-    </h2>
-
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-      {[
-        "The courses are clearly structured and easy to follow. I always knew what to learn next.",
-        "The instructors explain concepts patiently and practically. Very helpful experience.",
-        "This platform helped me gain confidence and consistency in my learning journey.",
-      ].map((text, i) => (
-        <div
-          key={i}
-          className="bg-slate-50 rounded-2xl p-8 border border-slate-200"
-        >
-          <p className="text-slate-600 text-sm leading-relaxed">
-            “{text}”
-          </p>
-
-          <div className="mt-6 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-slate-300" />
-            <div>
-              <p className="text-sm font-medium text-slate-800">
-                Verified Student
-              </p>
-              <p className="text-xs text-slate-500">
-                Enrolled Learner
-              </p>
-            </div>
+      <section className="section bg-white">
+        <Container size="wide">
+          <div className="section-header">
+            <span className="eyebrow">Student feedback</span>
+            <h2 className="heading-section">What Our Students Say</h2>
           </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
+
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {testimonials.map((text, i) => (
+              <div key={i} className="card-premium p-8">
+                <p className="text-sm leading-7 text-ink-600">"{text}"</p>
+
+                <div className="mt-7 flex items-center gap-3 border-t border-ink-200/70 pt-5">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-sheen text-sm font-semibold text-white shadow-soft">
+                    VS
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-ink-900">
+                      Verified Student
+                    </p>
+                    <p className="text-xs text-ink-500">Enrolled Learner</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
     </div>
   );
 }

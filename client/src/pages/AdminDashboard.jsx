@@ -1,9 +1,22 @@
 import { useEffect, useState } from "react";
-import { getStats, getPayments } from "../services/adminApi";
-import AdminLayout from "../pages/admin/AdminLayout";
 import axios from "axios";
+import {
+  BadgeIndianRupee,
+  BookOpenText,
+  CreditCard,
+  ReceiptText,
+} from "lucide-react";
+import { getPayments, getStats } from "../services/adminApi";
+import AdminLayout from "../pages/admin/AdminLayout";
 import API from "../config/api";
 import { getToken } from "../utils/auth";
+import Button from "../components/ui/Button";
+
+const currency = new Intl.NumberFormat("en-IN", {
+  style: "currency",
+  currency: "INR",
+  maximumFractionDigits: 0,
+});
 
 function AdminDashboard() {
   const token = getToken();
@@ -13,10 +26,8 @@ function AdminDashboard() {
   const [courseStats, setCourseStats] = useState(null);
   const [stats, setStats] = useState(null);
   const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // const API = import.meta.env.REACT_APP_API_URL;
-
-  // Course stats
   useEffect(() => {
     axios
       .get(`${API}/api/courses/admin/stats`, {
@@ -28,6 +39,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     const load = async () => {
+      setLoading(true);
       try {
         const statsRes = await getStats(token);
         const payRes = await getPayments(token, page);
@@ -39,105 +51,187 @@ function AdminDashboard() {
         setPages(payRes.data.pagination.pages);
       } catch (err) {
         console.error("ADMIN DASHBOARD ERROR:", err);
-        setPayments([]); //  safety
+        setPayments([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     load();
   }, [token, page]);
 
+  const statCards = [
+    {
+      label: "Total Revenue",
+      value: stats ? currency.format(stats.totalRevenue / 100) : "Loading",
+      icon: BadgeIndianRupee,
+      tone: "brand",
+    },
+    {
+      label: "Total Payments",
+      value: stats ? stats.totalPayments : "Loading",
+      icon: CreditCard,
+      tone: "mint",
+    },
+    {
+      label: "Active Courses",
+      value: courseStats ? courseStats.activeCourses : "Loading",
+      icon: BookOpenText,
+      tone: "dark",
+    },
+  ];
+
   return (
     <AdminLayout>
-      {/* Page Title */}
-      <h1 className="text-3xl font-medium text-gray-800 mb-8">
-        Admin Dashboard
-      </h1>
-
-      {/* Stats Cards */}
-      {stats && courseStats && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <StatCard
-            label="Total Revenue"
-            value={`₹${stats.totalRevenue / 100}`}
-          />
-          <StatCard label="Total Payments" value={stats.totalPayments} />
-          <StatCard label="Active Courses" value={courseStats.activeCourses} />
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <span className="eyebrow">Admin overview</span>
+          <h1 className="heading-section mt-3">Dashboard</h1>
+          <p className="text-lead mt-3">
+            Monitor revenue, payments, and active learning programs.
+          </p>
         </div>
-      )}
+      </div>
 
-      {/* Payments Table */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b">
-          <h2 className="text-lg font-medium">Recent Payments</h2>
+      <div className="mb-8 grid grid-cols-1 gap-5 md:grid-cols-3">
+        {statCards.map((card) => (
+          <StatCard key={card.label} {...card} />
+        ))}
+      </div>
+
+      <section className="surface-panel overflow-hidden">
+        <div className="flex flex-col gap-3 border-b border-ink-200/70 px-5 py-5 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
+              <ReceiptText size={22} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-ink-950">
+                Recent Payments
+              </h2>
+              <p className="text-sm text-ink-500">
+                Latest successful enrollment activity
+              </p>
+            </div>
+          </div>
+          <span className="badge-brand">{payments.length} records</span>
         </div>
 
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-slate-600">
-            <tr>
-              <th className="px-4 py-3 text-left">User</th>
-              <th className="px-4 py-3 text-left">Course</th>
-              <th className="px-4 py-3 text-left">Amount</th>
-              <th className="px-4 py-3 text-left">Date</th>
-              <th className="px-4 py-3 text-left">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payments.map((p) => (
-              <tr key={p._id} className="border-t hover:bg-slate-50">
-                <td className="px-4 py-3">{p.user?.email || "—"}</td>
-                <td className="px-4 py-3">{p.course?.title || "—"}</td>
-                <td className="px-4 py-3">₹{p.amount / 100}</td>
-                <td className="px-4 py-3">
-                  {new Date(p.createdAt).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-3">
-                  <span className="px-3 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">
-                    {p.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="flex items-center justify-between px-6 py-4 border-t bg-slate-50">
-          <button
+        {loading ? (
+          <TableSkeleton />
+        ) : payments.length === 0 ? (
+          <div className="px-6 py-14 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-ink-50 text-ink-500">
+              <ReceiptText size={27} />
+            </div>
+            <h3 className="mt-4 text-xl font-semibold text-ink-950">
+              No payments yet
+            </h3>
+            <p className="mt-2 text-sm text-ink-500">
+              Recent payment activity will appear here.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[760px] text-sm">
+              <thead className="bg-ink-50 text-xs uppercase tracking-wide text-ink-500">
+                <tr>
+                  <th className="px-5 py-4 text-left font-semibold">User</th>
+                  <th className="px-5 py-4 text-left font-semibold">Course</th>
+                  <th className="px-5 py-4 text-left font-semibold">Amount</th>
+                  <th className="px-5 py-4 text-left font-semibold">Date</th>
+                  <th className="px-5 py-4 text-left font-semibold">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-ink-200/70">
+                {payments.map((payment) => (
+                  <tr
+                    key={payment._id}
+                    className="transition duration-200 ease-premium hover:bg-brand-50/50"
+                  >
+                    <td className="px-5 py-4 font-medium text-ink-800">
+                      {payment.user?.email || "-"}
+                    </td>
+                    <td className="px-5 py-4 text-ink-600">
+                      {payment.course?.title || "-"}
+                    </td>
+                    <td className="px-5 py-4 font-semibold text-ink-950">
+                      {currency.format(payment.amount / 100)}
+                    </td>
+                    <td className="px-5 py-4 text-ink-600">
+                      {new Date(payment.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                        {payment.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between border-t border-ink-200/70 bg-ink-50/70 px-5 py-4">
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
             disabled={page === 1}
             onClick={() => setPage((p) => p - 1)}
-            className={`px-4 py-2 text-sm rounded ${
-              page === 1
-                ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                : "bg-white border hover:bg-slate-100"
-            }`}
           >
             Previous
-          </button>
+          </Button>
 
-          <span className="text-sm text-slate-600">
+          <span className="text-sm font-medium text-ink-600">
             Page {page} of {pages}
           </span>
 
-          <button
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
             disabled={page === pages}
             onClick={() => setPage((p) => p + 1)}
-            className={`px-4 py-2 text-sm rounded ${
-              page === pages
-                ? "bg-slate-200 text-slate-400 cursor-not-allowed"
-                : "bg-white border hover:bg-slate-100"
-            }`}
           >
             Next
-          </button>
+          </Button>
         </div>
-      </div>
+      </section>
     </AdminLayout>
   );
 }
 
-function StatCard({ label, value }) {
+function StatCard({ label, value, icon: Icon, tone }) {
+  const iconClass =
+    tone === "mint"
+      ? "bg-emerald-50 text-emerald-700"
+      : tone === "dark"
+      ? "bg-ink-950 text-white"
+      : "bg-brand-sheen text-white";
+
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="text-2xl font-semibold mt-1">{value}</p>
+    <div className="card-premium p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-medium text-ink-500">{label}</p>
+          <p className="mt-2 text-3xl font-semibold text-ink-950">{value}</p>
+        </div>
+        <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${iconClass}`}>
+          <Icon size={23} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TableSkeleton() {
+  return (
+    <div className="space-y-3 p-5">
+      {[0, 1, 2, 3].map((item) => (
+        <div key={item} className="h-12 animate-pulse rounded-xl bg-ink-100" />
+      ))}
     </div>
   );
 }

@@ -1,36 +1,34 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import API from "../../config/api";
 import { getToken } from "../../utils/auth";
-import { useParams, useNavigate } from "react-router-dom";
+import AdminLayout from "./AdminLayout";
+import Button from "../../components/ui/Button";
 
 function EditCourse() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // const API = import.meta.env.REACT_APP_API_URL;
-
   const [course, setCourse] = useState(null);
   const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  /* 🔹 Fetch course */
   useEffect(() => {
     axios
       .get(`${API}/api/courses/${id}`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
-      .then(res => setCourse(res.data))
+      .then((res) => setCourse(res.data))
       .catch(() => alert("Failed to load course"));
   }, [id]);
 
-  /* 🔹 Fetch teachers */
   useEffect(() => {
     axios
       .get(`${API}/api/teachers`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       })
-      .then(res => setTeachers(res.data))
+      .then((res) => setTeachers(res.data))
       .catch(() => {});
   }, []);
 
@@ -46,9 +44,7 @@ function EditCourse() {
         {
           ...course,
           price: Number(course.price),
-          duration: course.duration
-            ? Number(course.duration)
-            : undefined,
+          duration: course.duration ? Number(course.duration) : undefined,
         },
         {
           headers: { Authorization: `Bearer ${getToken()}` },
@@ -64,163 +60,143 @@ function EditCourse() {
     }
   };
 
-  if (!course) return null;
+  if (!course) {
+    return (
+      <AdminLayout>
+        <div className="surface-panel p-8 text-ink-500">Loading course...</div>
+      </AdminLayout>
+    );
+  }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16">
-      <h1 className="text-3xl font-medium text-slate-800 mb-8">
-        Edit Course
-      </h1>
-
-      <form
-        onSubmit={update}
-        className="space-y-6 bg-white p-8 rounded-xl border"
-      >
-        {/* Title */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Course Title
-          </label>
-          <input
-            className="w-full border rounded px-3 py-2"
-            value={course.title}
-            onChange={(e) =>
-              setCourse({ ...course, title: e.target.value })
-            }
-            required
-          />
+    <AdminLayout>
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-8">
+          <span className="eyebrow">Course editor</span>
+          <h1 className="heading-section mt-3">Edit Course</h1>
+          <p className="text-lead mt-3">
+            Update course information, teacher assignment, and visibility.
+          </p>
         </div>
 
-        {/* Image */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Image Path
-          </label>
-          <input
-            className="w-full border rounded px-3 py-2"
-            value={course.image}
-            onChange={(e) =>
-              setCourse({ ...course, image: e.target.value })
-            }
-          />
-          {course.image && (
-            <img
-              src={course.image}
-              alt="Preview"
-              className="mt-3 w-full h-40 object-cover rounded border"
+        <form onSubmit={update} className="surface-panel space-y-6 p-6 md:p-8">
+          <Field label="Course Title">
+            <input
+              className="form-input"
+              value={course.title}
+              onChange={(e) => setCourse({ ...course, title: e.target.value })}
+              required
             />
-          )}
-        </div>
+          </Field>
 
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Description
-          </label>
-          <textarea
-            className="w-full border rounded px-3 py-2 min-h-[120px]"
-            value={course.description}
-            onChange={(e) =>
-              setCourse({ ...course, description: e.target.value })
-            }
-            required
-          />
-        </div>
+          <Field label="Image Path">
+            <input
+              className="form-input"
+              value={course.image}
+              onChange={(e) => setCourse({ ...course, image: e.target.value })}
+            />
+            {course.image && (
+              <img
+                src={course.image}
+                alt="Preview"
+                className="mt-3 h-48 w-full rounded-2xl border border-ink-200 object-cover shadow-soft"
+              />
+            )}
+          </Field>
 
-        {/* Price */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Price (paise)
-          </label>
-          <input
-            type="number"
-            className="w-full border rounded px-3 py-2"
-            value={course.price}
-            onChange={(e) =>
-              setCourse({ ...course, price: e.target.value })
-            }
-            required
-          />
-        </div>
+          <Field label="Description">
+            <textarea
+              className="form-input min-h-[130px]"
+              value={course.description}
+              onChange={(e) =>
+                setCourse({ ...course, description: e.target.value })
+              }
+              required
+            />
+          </Field>
 
-        {/* Duration */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Duration (hours) — optional
-          </label>
-          <input
-            type="number"
-            className="w-full border rounded px-3 py-2"
-            value={course.duration || ""}
-            onChange={(e) =>
-              setCourse({ ...course, duration: e.target.value })
-            }
-          />
-        </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            <Field label="Price (paise)">
+              <input
+                type="number"
+                className="form-input"
+                value={course.price}
+                onChange={(e) => setCourse({ ...course, price: e.target.value })}
+                required
+              />
+            </Field>
 
-        {/* Teacher */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Teacher
-          </label>
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={course.teacher}
-            onChange={(e) =>
-              setCourse({ ...course, teacher: e.target.value })
-            }
-          >
-            <option value="">Select teacher</option>
-            {teachers.map(t => (
-              <option key={t._id} value={t._id}>
-                {t.name || t.email}
-              </option>
-            ))}
-          </select>
-        </div>
+            <Field label="Duration (hours) - optional">
+              <input
+                type="number"
+                className="form-input"
+                value={course.duration || ""}
+                onChange={(e) =>
+                  setCourse({ ...course, duration: e.target.value })
+                }
+              />
+            </Field>
+          </div>
 
-        {/* Category */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Category
-          </label>
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={course.category}
-            onChange={(e) =>
-              setCourse({ ...course, category: e.target.value })
-            }
-          >
-            <option value="Academic">Academic</option>
-            <option value="Skills">Skills</option>
-            <option value="Islamic">Islamic</option>
-          </select>
-        </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            <Field label="Teacher">
+              <select
+                className="form-input"
+                value={course.teacher}
+                onChange={(e) => setCourse({ ...course, teacher: e.target.value })}
+              >
+                <option value="">Select teacher</option>
+                {teachers.map((teacher) => (
+                  <option key={teacher._id} value={teacher._id}>
+                    {teacher.name || teacher.email}
+                  </option>
+                ))}
+              </select>
+            </Field>
 
-        {/* Active Toggle */}
-        <div className="flex items-center justify-between border rounded px-4 py-3">
-          <span className="text-sm font-medium">
-            Course Active
-          </span>
-          <input
-            type="checkbox"
-            checked={course.isActive}
-            onChange={(e) =>
-              setCourse({ ...course, isActive: e.target.checked })
-            }
-            className="w-5 h-5"
-          />
-        </div>
+            <Field label="Category">
+              <select
+                className="form-input"
+                value={course.category}
+                onChange={(e) =>
+                  setCourse({ ...course, category: e.target.value })
+                }
+              >
+                <option value="Academic">Academic</option>
+                <option value="Skills">Skills</option>
+                <option value="Islamic">Islamic</option>
+              </select>
+            </Field>
+          </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-slate-800 text-white py-2 rounded hover:bg-slate-900 disabled:opacity-60"
-        >
-          {loading ? "Saving..." : "Save Changes"}
-        </button>
-      </form>
+          <div className="flex items-center justify-between rounded-2xl border border-ink-200 bg-ink-50 px-4 py-3">
+            <span className="text-sm font-medium text-ink-800">Course Active</span>
+            <input
+              type="checkbox"
+              checked={course.isActive}
+              onChange={(e) =>
+                setCourse({ ...course, isActive: e.target.checked })
+              }
+              className="h-5 w-5 rounded border-ink-300 text-brand-600"
+            />
+          </div>
+
+          <Button type="submit" disabled={loading} variant="dark" className="w-full">
+            {loading ? "Saving..." : "Save Changes"}
+          </Button>
+        </form>
+      </div>
+    </AdminLayout>
+  );
+}
+
+function Field({ label, children }) {
+  return (
+    <div>
+      <label className="mb-2 block text-sm font-medium text-ink-700">
+        {label}
+      </label>
+      {children}
     </div>
   );
 }

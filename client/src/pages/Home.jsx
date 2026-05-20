@@ -51,11 +51,30 @@ const features = [
 ];
 
 const heroStats = [
-  { value: "3+", label: "Learning tracks" },
-  { value: "24/7", label: "Course access" },
-  { value: "100%", label: "Secure checkout" },
-];
+  {
+    value: "500+",
+    label: "Active Students",
+    description:
+      "Learners building real-world skills through guided online programs.",
+    gradient: "from-cyan-400 to-blue-500",
+  },
 
+  {
+    value: "25+",
+    label: "Premium Courses",
+    description:
+      "Modern technology and development courses with structured paths.",
+    gradient: "from-emerald-400 to-cyan-400",
+  },
+
+  {
+    value: "24/7",
+    label: "Flexible Learning",
+    description:
+      "Access your enrolled courses anytime with self-paced learning.",
+    gradient: "from-violet-400 to-pink-400",
+  },
+];
 const trustItems = [
   "Structured curriculum",
   "Expert guidance",
@@ -258,7 +277,7 @@ function Home() {
                 </div>
 
                 <div className="absolute bottom-6 right-6 rounded-2xl border border-white/20 bg-ink-950/78 p-4 text-white shadow-premium backdrop-blur-xl">
-                  <p className="text-xs font-medium text-slate-300">
+                  <p className="text-xs font-medium text-slate-600">
                     Student focus
                   </p>
                   <p className="mt-1 text-lg font-semibold">Guided paths</p>
@@ -267,14 +286,31 @@ function Home() {
             </Reveal>
           </div>
 
-          <Stagger className="mt-14 grid gap-3 rounded-3xl border border-white/14 bg-white/10 p-3 shadow-inset backdrop-blur-xl sm:grid-cols-3">
+          <Stagger className="mt-16 grid gap-5 md:grid-cols-3">
             {heroStats.map((stat) => (
               <StaggerItem
                 key={stat.label}
-                className="rounded-2xl border border-white/12 bg-white/10 px-5 py-5 text-center transition duration-200 ease-premium hover:-translate-y-0.5 hover:bg-white/14"
+                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:bg-white/10"
               >
-                <p className="text-3xl font-semibold text-white">{stat.value}</p>
-                <p className="mt-1 text-sm text-slate-300">{stat.label}</p>
+                <div
+                  className={`absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-br ${stat.gradient} blur-3xl`}
+                />
+
+                <div className="relative z-10">
+                  <div
+                    className={`inline-block bg-gradient-to-r ${stat.gradient} bg-clip-text text-5xl font-bold text-transparent`}
+                  >
+                    {stat.value}
+                  </div>
+
+                  <h3 className="mt-5 text-xl font-semibold text-white">
+                    {stat.label}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-7 text-slate-300">
+                    {stat.description}
+                  </p>
+                </div>
               </StaggerItem>
             ))}
           </Stagger>
@@ -287,8 +323,8 @@ function Home() {
             <span className="eyebrow">Featured courses</span>
             <h2 className="heading-section">Explore Our Courses</h2>
             <p className="text-lead mt-4">
-              Start with structured programs designed for steady progress,
-              clear outcomes, and flexible learning.
+              Start with structured programs designed for steady progress, clear
+              outcomes, and flexible learning.
             </p>
           </Reveal>
 
@@ -320,7 +356,9 @@ function Home() {
         <Container size="wide">
           <div className="section-header">
             <span className="eyebrow">Why Learnify</span>
-            <h2 className="heading-section">Built around clarity and momentum</h2>
+            <h2 className="heading-section">
+              Built around clarity and momentum
+            </h2>
             <p className="text-lead mt-4">
               Each part of the platform supports a simple flow: understand the
               path, enroll securely, and keep moving through your lessons.
@@ -357,7 +395,9 @@ function Home() {
           <div className="mb-10 grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
             <div>
               <span className="eyebrow">Learning experience</span>
-              <h2 className="heading-section">Programs that feel easy to follow</h2>
+              <h2 className="heading-section">
+                Programs that feel easy to follow
+              </h2>
             </div>
             <p className="text-lead lg:max-w-2xl lg:justify-self-end">
               Clear curriculum design, guided instruction, and flexible access
@@ -376,7 +416,9 @@ function Home() {
                 >
                   <CheckCircle2 size={24} />
                 </div>
-                <h3 className="text-xl font-semibold text-ink-950">{f.title}</h3>
+                <h3 className="text-xl font-semibold text-ink-950">
+                  {f.title}
+                </h3>
                 <ul className="mt-6 space-y-3 text-sm leading-6 text-ink-600">
                   {f.items.map((it, idx) => (
                     <li key={idx} className="flex gap-3">
@@ -401,8 +443,8 @@ function Home() {
               <span className="eyebrow">Faculty</span>
               <h2 className="heading-section">Our Faculty</h2>
               <p className="text-lead mt-4">
-                Learn with instructors focused on clear explanations,
-                practical guidance, and consistent student support.
+                Learn with instructors focused on clear explanations, practical
+                guidance, and consistent student support.
               </p>
             </div>
 
@@ -451,7 +493,9 @@ function Home() {
                     alt={f.name}
                     className="mx-auto mb-4 h-24 w-24 rounded-2xl object-cover shadow-soft"
                   />
-                  <h3 className="text-lg font-semibold text-ink-950">{f.name}</h3>
+                  <h3 className="text-lg font-semibold text-ink-950">
+                    {f.name}
+                  </h3>
                   <p className="mt-2 text-sm leading-6 text-ink-600">{f.bio}</p>
                 </div>
               ))}

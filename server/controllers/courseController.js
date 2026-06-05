@@ -55,11 +55,11 @@ exports.getHomeCourses = async (req, res) => {
 
 exports.getAdminCourses = async (req, res) => {
   try {
-      console.log("GetAdminCourses HIT");
+      // console.log("GetAdminCourses HIT");
 
     const courses = await Course.find().lean();
 
-    console.log("Course Count: ", courses.length);
+    // console.log("Course Count: ", courses.length);
     const courseIds = courses.map(c => c._id);
 
     const enrollments = await Enrollment.aggregate([

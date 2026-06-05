@@ -238,7 +238,7 @@ function Home() {
                   variant="secondary"
                   size="lg"
                   onClick={() => navigate("/about")}
-                  className="border-white/25 bg-white/12 text-white shadow-none backdrop-blur hover:border-white/40 hover:bg-white/18 hover:text-white"
+                  className="border-white/25 bg-white/12 text-black shadow-none backdrop-blur hover:border-white/40 hover:bg-white/18 hover:text-white"
                 >
                   Learn More
                 </Button>

@@ -19,7 +19,7 @@ const quickLinks = [
 ];
 
 const contactItems = [
-  { icon: Mail, label: "support@learnhub.com" },
+  { icon: Mail, label: "contact.ahamedstudio@gmail.com" },
   { icon: Phone, label: "+91 90000 00000" },
   { icon: MapPin, label: "India" },
 ];
